@@ -12,7 +12,7 @@ void obrada_prekida(int j){
   sleep(j);
   cout << "End --- obrada gotova" << endl;
 }
-//https://github.com/Rysc0/Operating-systems-lab
+
 void prekidna_rutina(int sig){
   int i;
 
