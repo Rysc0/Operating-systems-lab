@@ -11,27 +11,30 @@ void obrada_prekida(int j){
   }
   sleep(j);
   cout << "End --- obrada gotova" << endl;
+  cout << j << endl;
 }
 
 void prekidna_rutina(int sig){
   int i;
 
   cout << "Prekidna rutina aktivirana!" << endl;
-
+  cout << "Razina prekida: " << i << endl;
   switch (sig) {
     case SIGINT:
         i = 1;
+        obrada_prekida(i);
         break;
     case SIGQUIT:
       i = 2;
+      obrada_prekida(i);
       break;
     case SIGTSTP:
       i = 3;
       break;
+      obrada_prekida(i);
     default:
       return;
   }
-  cout << "Razina prekida: " << i << endl;
 }
 
 int main(void){
