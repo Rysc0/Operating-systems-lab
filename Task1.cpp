@@ -18,7 +18,6 @@ void prekidna_rutina(int sig){
   int i;
 
   cout << "Prekidna rutina aktivirana!" << endl;
-  cout << "Razina prekida: " << i << endl;
   switch (sig) {
     case SIGINT:
         i = 1;
@@ -30,11 +29,12 @@ void prekidna_rutina(int sig){
       break;
     case SIGTSTP:
       i = 3;
-      break;
       obrada_prekida(i);
+      break;
     default:
       return;
   }
+  cout << "Razina prekida: " << i << endl;
 }
 
 int main(void){
