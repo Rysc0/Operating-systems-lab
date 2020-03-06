@@ -4,14 +4,14 @@
 using namespace std;
 
 void obrada_prekida(int j){
-  int prioritet = 0;
-  if(j>prioritet){
-    prioritet = j;
-    cout << "Razina prekida = " << prioritet << j << endl;
+  volatile int tekuci_prioritet = 0;
+  if(j>tekuci_prioritet){
+    cout << "Razina prekida = " << j << endl;
     cout << "Start --- obrada prekida" << endl;
     for(int i=1;i<=5;i++){
       cout << "Prekid " << i << "/5" << endl;
       sleep(1);
+      tekuci_prioritet = j;
     }
   //  sleep(j);
   cout << "End --- obrada gotova" << endl;
