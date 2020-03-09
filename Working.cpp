@@ -3,10 +3,11 @@
 #include<unistd.h>
 using namespace std;
 
-int prioritet;
+int trenutni_prioritet = 0;
+int prekidi[4];
 
 void funkcija(int sig){
-  int trenutni_prioritet = prioritet;
+  int prioritet;
 
   switch(sig){
     case (SIGINT):
@@ -20,13 +21,20 @@ void funkcija(int sig){
       break;
   }
   cout << "Prioritet je " << prioritet << " a trenutni prioritet je " << trenutni_prioritet << endl;
+
   if(prioritet >= trenutni_prioritet){
+    prekidi[prioritet]=trenutni_prioritet;
+    trenutni_prioritet=prioritet;
     sigrelse(sig);
     for(int i=0;i<=5;i++){
-      cout << "Prekid " << i << "/5" << endl;
+      cout << "Prekid " << i << "/5" <<  "\trazina: " << prioritet << endl;
       sleep(1);
     }
+    cout << "zavrsila obrada prekida" << prioritet << endl;
+    sighold(sig);
+    trenutni_prioritet=prekidi[prioritet];
   }
+  /*
   else {
     sighold(sig);
     /*if(prioritet > trenutni_prioritet){
@@ -40,7 +48,7 @@ void funkcija(int sig){
 
   //prioritet = 0;
 
-}
+
 
 
 int main(){
@@ -57,7 +65,7 @@ int main(){
     sleep(1);
   }
 
-  cout << "Krajnji prioritet je " << prioritet << endl;
+  cout << "Krajnji prioritet je " << trenutni_prioritet << endl;
   /*do{
     cout << "unesi broj: ";
     cin >> n;
