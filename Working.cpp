@@ -27,12 +27,24 @@ void funkcija(int sig){
       sleep(1);
     }
   }
-  else sigignore(sig);
+  else {
+    sighold(sig);
+    /*if(prioritet > trenutni_prioritet){
+      sigignore(sig);
+    }*/
+  }
+  // problem - sighold drzi samo jedan signal i omogucava prekid vise razine ako 2 puta dode niza razina dok
+  // sigignore ignorira sve signale i nije moguce napraviti prekid manje razine nakon izvrsetka vise razine prekida
+  //sigignore(sig);
+
+
+  //prioritet = 0;
+
 }
 
 
 int main(){
-  int n;
+
 
   sigset(SIGINT, funkcija);
   sigset(SIGQUIT, funkcija);
@@ -44,11 +56,14 @@ int main(){
     cout << "Main program " << i << "/20" << endl;
     sleep(1);
   }
+
+  cout << "Krajnji prioritet je " << prioritet << endl;
   /*do{
     cout << "unesi broj: ";
     cin >> n;
     funkcija(n);
   }while(n!=0);
 */
+
   return 0;
   }
