@@ -20,8 +20,11 @@ void obrada_prekida(int j){
   else return;
 }
 void prekidna_rutina(int sig){
-  int i;
-
+  int i = sig;
+  if(sig < i){
+  sigignore(sig);
+  }
+  else{
   cout << "Prekidna rutina aktivirana!" << endl << endl;
   switch (sig) {
     case SIGINT:
@@ -40,6 +43,7 @@ void prekidna_rutina(int sig){
       return;
   }
   //cout << "Razina prekida: " << i << endl;
+  }
 }
 
 int main(void){

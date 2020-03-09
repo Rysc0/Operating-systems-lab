@@ -3,16 +3,21 @@
 #include<unistd.h>
 using namespace std;
 
+void funkcija(){
+
+}
 
 void prioritet(int sig, int priority){
   // setting priority
   if(sig > priority){
     priority = sig;
+
     cout << "Prioritet je: " << priority << endl;
     //return priority;
     for(int i=1;i<=5;i++){
       cout << i << "/5" << endl;
       sleep(1);
+
     }
     cout << endl;
   }
@@ -25,6 +30,7 @@ void prioritet(int sig, int priority){
 void prekid(int sig){
   volatile int priority = 0;
   prioritet(sig,priority);
+  sigignore(sig);
 /*  if(sig > prioritet(sig,priority)){
     cout << "Prekid" << endl;
     for(int i = 1;i <=10; i++){
