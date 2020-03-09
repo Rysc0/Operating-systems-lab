@@ -3,6 +3,8 @@
 #include<unistd.h>
 using namespace std;
 
+int prioritet; // globalna varijabla preko koje će se određivat prioritet signala 
+
 void handler(int sig){
 
   sigignore(sig);
