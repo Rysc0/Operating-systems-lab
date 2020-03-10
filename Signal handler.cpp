@@ -34,7 +34,7 @@ void funkcija(int sig){
     sighold(sig);
     trenutni_prioritet=prekidi[prioritet];
   }
-
+}
 int main(){
 
   sigset(SIGINT, funkcija);
@@ -49,6 +49,6 @@ int main(){
   }
 
   cout << "Krajnji prioritet je " << trenutni_prioritet << endl;
-  
+
   return 0;
   }
