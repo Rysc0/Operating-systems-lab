@@ -4,12 +4,13 @@
 using namespace std;
 
 int trenutni_prioritet = 0;
-int prekidi[4];
+int prekidi[3];
 
-void funkcija(int sig){
+void handler(int sig) {
+
   int prioritet;
 
-  switch(sig){
+  switch(sig) {
     case (SIGINT):
       prioritet = 1;
       break;
@@ -20,35 +21,41 @@ void funkcija(int sig){
       prioritet = 3;
       break;
   }
-  cout << "Prioritet je " << prioritet << " a trenutni prioritet je " << trenutni_prioritet << endl;
 
-  if(prioritet >= trenutni_prioritet){
-    prekidi[prioritet]=trenutni_prioritet;
-    trenutni_prioritet=prioritet;
+  cout << endl;
+
+  if(prioritet > trenutni_prioritet) {
+    prekidi[prioritet] = trenutni_prioritet;
+    trenutni_prioritet = prioritet;
     sigrelse(sig);
-    for(int i=0;i<=5;i++){
-      cout << "Prekid " << i << "/5" <<  "\trazina: " << prioritet << endl;
+    cout << "-------------------------------------------" << endl;
+
+    for(int i = 1; i <= 5; i++) {
+      cout << "\tPrekid " << i << "/5" <<  "\tRazina: " << prioritet << endl;
       sleep(1);
     }
-    cout << "zavrsila obrada prekida" << prioritet << endl;
+
+    cout << "\n\tZAVRSILA OBRADA PREKIDA " << prioritet << endl;
+    cout << "-------------------------------------------" << endl;
     sighold(sig);
-    trenutni_prioritet=prekidi[prioritet];
+    trenutni_prioritet = prekidi[prioritet];
+
+    cout << endl;
   }
 }
-int main(){
 
-  sigset(SIGINT, funkcija);
-  sigset(SIGQUIT, funkcija);
-  sigset(SIGTSTP, funkcija);
+int main() {
 
-  cout << "Main program running" << endl << endl;
+  sigset(SIGINT, handler);
+  sigset(SIGQUIT, handler);
+  sigset(SIGTSTP, handler);
 
-  for(int i=1;i<=20;i++){
+  cout << "\nMAIN PROGRAM RUNNING" << endl << endl;
+
+  for(int i = 1; i <= 20; i++) {
     cout << "Main program " << i << "/20" << endl;
     sleep(1);
   }
-
-  cout << "Krajnji prioritet je " << trenutni_prioritet << endl;
-
+  cout << "\nPROGRAM FINISHED" << endl;
   return 0;
   }
