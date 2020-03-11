@@ -1,10 +1,17 @@
 #include<iostream>
 #include<signal.h>
 #include<unistd.h>
+#include<time.h>
 using namespace std;
 
 int trenutni_prioritet = 0;
 int prekidi[3];
+
+void current_time() {
+  time_t timer;
+  time(&timer);
+  cout << ctime(&timer);
+}
 
 void handler(int sig) {
 
@@ -29,13 +36,17 @@ void handler(int sig) {
     trenutni_prioritet = prioritet;
     sigrelse(sig);
     cout << "-------------------------------------------" << endl;
-
+    cout << "\t";
+    current_time();
+    cout << "\tPOCELA OBRADA PREKIDA " << prioritet << endl << endl;
     for(int i = 1; i <= 5; i++) {
       cout << "\tPrekid " << i << "/5" <<  "\tRazina: " << prioritet << endl;
       sleep(1);
     }
 
     cout << "\n\tZAVRSILA OBRADA PREKIDA " << prioritet << endl;
+    cout << "\t";
+    current_time();
     cout << "-------------------------------------------" << endl;
     sighold(sig);
     trenutni_prioritet = prekidi[prioritet];
