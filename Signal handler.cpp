@@ -32,13 +32,17 @@ void handler(int sig) {
   cout << endl;
 
   if(prioritet > trenutni_prioritet) {
+
     prekidi[prioritet] = trenutni_prioritet;
     trenutni_prioritet = prioritet;
+
     sigrelse(sig);
+
     cout << "-------------------------------------------" << endl;
     cout << "\t";
     current_time();
     cout << "\tPOCELA OBRADA PREKIDA " << prioritet << endl << endl;
+
     for(int i = 1; i <= 5; i++) {
       cout << "\tPrekid " << i << "/5" <<  "\tRazina: " << prioritet << endl;
       sleep(1);
@@ -48,7 +52,9 @@ void handler(int sig) {
     cout << "\t";
     current_time();
     cout << "-------------------------------------------" << endl;
+
     sighold(sig);
+
     trenutni_prioritet = prekidi[prioritet];
 
     cout << endl;
@@ -67,6 +73,8 @@ int main() {
     cout << "Main program " << i << "/20" << endl;
     sleep(1);
   }
+
   cout << "\nPROGRAM FINISHED" << endl;
+
   return 0;
   }
