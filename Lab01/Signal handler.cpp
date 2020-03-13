@@ -1,3 +1,6 @@
+/*Napisati program koji omogućava obradu prekida s više razina/prioriteta,
+bar triju, zadanih od korisnika, s tim da se prekidi koji čekaju na obradu
+ne pamte, ali viša razina prioriteta prekida manju razinu. */
 #include<iostream>
 #include<signal.h>
 #include<unistd.h>
