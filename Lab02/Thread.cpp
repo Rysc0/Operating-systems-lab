@@ -32,13 +32,13 @@ void *random_number(void *arg){
 }
 
 void *how_many_times(void *arg){
-
-    int zbroj = 0;
-    for(int i = 0; i <= 5; i++){
-      zbroj = zbroj + global_variable[i];
+    for(int j = 0; j <= times; j++){
+      int zbroj = 0;
+      for(int i = 0; i <= 5; i++){
+        zbroj = zbroj + global_variable[i];
+      }
+      cout << "Zbroj je: " << zbroj << endl;
     }
-    cout << "Zbroj je: " << zbroj << endl;
-
 }
 
 
