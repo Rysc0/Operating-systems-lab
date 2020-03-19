@@ -26,7 +26,7 @@ void *random_number(void *arg){
   for(int i = 0; i <= 5; i++){
     int number = rand()%5;
     global_variable[i] = number;
-    //cout << "Random number is: " << number << endl;
+    cout << "Random number is: " << number << endl;
     cout << global_variable[i] << endl;
   }
 }
