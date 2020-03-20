@@ -51,14 +51,19 @@ void* addition(void* arg){
 int main(int argc, char **argv) {
 
   srand(time(NULL));
-  int brojeva = atoi(argv[1]);
-  int limit = atoi(argv[2]);
-
-  if(argc < 2 || argc > 3){
-    cout << "usage " << argv[0] << endl;
+  bool good;
+  if(argc != 3){
+    cout << "usage: must have exactly 3 arguments, "<< argv[0] <<" included\n";
     exit(-1);
   }
   else{
+    good = 1;
+  }
+
+  int brojeva = atoi(argv[1]);
+  int limit = atoi(argv[2]);
+
+  if(good){
     // limit argument value to 10
     if(brojeva > 10 && limit < 2){
       cout << "First argument limitations are 1-10!\nSecond argument must be greater than 2!\n";
