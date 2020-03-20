@@ -76,10 +76,6 @@ int main(int argc, char **argv) {
 
   }
 
-  // number of arguments being passed to thread
-  //int number_of_arguments = argc - 1;
-
-
   // thread id
   pthread_t pid;
   pthread_t pid1;
@@ -90,8 +86,7 @@ int main(int argc, char **argv) {
       /* &brojeva je argument koji se prosljeđuje u thread, tj onaj argument sa terminala*/
     }
     pthread_create(&pid1,NULL,addition,NULL); // change return value later
-    /*for(int i = 0; i < limit-1; i++){
-    }*/
+  
     // do other stuff here
   }
 
