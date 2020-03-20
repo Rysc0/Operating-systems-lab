@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
       /* &brojeva je argument koji se prosljeđuje u thread, tj onaj argument sa terminala*/
     }
     pthread_create(&pid1,NULL,addition,NULL); // change return value later
-  
+
     // do other stuff here
   }
 
@@ -97,3 +97,6 @@ int main(int argc, char **argv) {
   cout << "Sum is " << sum << endl;
   return 0;
 }
+
+  /* TODO: Figure out how to properly loop threads and how to make sum work every time.
+           Limit access to global memory to one thread at the time. */
