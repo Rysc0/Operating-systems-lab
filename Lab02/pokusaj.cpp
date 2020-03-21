@@ -108,5 +108,4 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-  /* TODO: Figure out how to properly loop threads and how to make sum work every time.
-           Limit access to global memory to one thread at the time. */
+  /* TODO: Figure out how to properly loop threads and how to make sum work every time. */
