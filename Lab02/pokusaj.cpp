@@ -44,12 +44,14 @@ void* sum_runner(void* arg){
 
 void* addition(void* arg){
   while(usage){
-    for(int i = 0; i < 5; i++){
+    int *brojeva_ptr = (int*) arg;
+    int brojeva = *brojeva_ptr;
+    for(int i = 0; i < brojeva; i++){
       sum = sum + global_variable[i];
     }
     cout << "Zbroj je: " << sum << endl;
-    usage = false;
     sum = 0;
+    usage = false;
   }
 }
 
@@ -67,6 +69,7 @@ int main(int argc, char **argv) {
 
   int brojeva = atoi(argv[1]);
   int limit = atoi(argv[2]);
+
 
   if(good){
     // limit argument value to 10
@@ -90,12 +93,12 @@ int main(int argc, char **argv) {
   pthread_t pid;
   pthread_t pid1;
 
-  for(int z = 0; z < limit-1; z++){
+  for(int z = 0; z <= limit-1; z++){
     for(int i = 0; i < limit-1; i++){ // argv[2] is M (how many times threads need to run)
       pthread_create(&pid,NULL,sum_runner,&brojeva);
       /* &brojeva je argument koji se prosljeđuje u thread, tj onaj argument sa terminala*/
     }
-    pthread_create(&pid1,NULL,addition,NULL); // change return value later
+    pthread_create(&pid1,NULL,addition,&brojeva); // change return value later
 
     // do other stuff here
   }
