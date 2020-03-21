@@ -14,22 +14,27 @@ dretva nema pravo pristupiti zajedničkoj memoriji tada MOŽE BITI U RADNOM ČEK
 #include<stdio.h>
 #include<stdlib.h>
 #include<ctime>
+#include<unistd.h>
 #include<iostream>
 using namespace std;
 // the sum computed by the background thread
 int sum = 0;
 int global_variable[10];
+bool usage = false;
 
 // thread function to generate random numbers from 0 to arg
 void* sum_runner(void* arg){
-  // typecasting void arg to int
-  int *brojeva_ptr = (int*) arg;
-  int brojeva = *brojeva_ptr;
-  // generating random numbers
-  for(int i = 0; i < brojeva; i++){
-    int number = rand()%5;
-    global_variable[i] = number;
-    cout << global_variable[i] << endl;
+  while(!usage){
+    // typecasting void arg to int
+    int *brojeva_ptr = (int*) arg;
+    int brojeva = *brojeva_ptr;
+    // generating random numbers
+    for(int i = 0; i < brojeva; i++){
+      int number = rand()%5;
+      global_variable[i] = number;
+      cout << global_variable[i] << endl;
+    }
+    usage = true;
   }
 
   pthread_exit(0);
@@ -38,14 +43,14 @@ void* sum_runner(void* arg){
 }
 
 void* addition(void* arg){
-
+  while(usage){
     for(int i = 0; i < 5; i++){
-
       sum = sum + global_variable[i];
     }
     cout << "Zbroj je: " << sum << endl;
-
-
+    usage = false;
+    sum = 0;
+  }
 }
 
 int main(int argc, char **argv) {
@@ -99,7 +104,7 @@ int main(int argc, char **argv) {
   pthread_join(pid,NULL);
   pthread_join(pid1,NULL);
 
-  cout << "Sum is " << sum << endl;
+  //cout << "Sum is " << sum << endl;
   return 0;
 }
 
