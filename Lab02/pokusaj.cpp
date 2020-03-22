@@ -25,7 +25,7 @@ bool usage = false;
 // thread function to generate random numbers from 0 to arg
 void* sum_runner(void* arg){
   while(usage){
-    sleep(2);
+    sleep(1);
   }
   while(!usage){
     // typecasting void arg to int
@@ -33,7 +33,7 @@ void* sum_runner(void* arg){
     int brojeva = *brojeva_ptr;
     // generating random numbers
     for(int i = 0; i < brojeva; i++){
-      int number = rand()%5;
+      int number = rand()%100;
       global_variable[i] = number;
       cout << global_variable[i] << endl;
     }
@@ -47,7 +47,7 @@ void* sum_runner(void* arg){
 
 void* addition(void* arg){
   while(!usage){
-    sleep(2);
+    sleep(1);
   }
   while(usage){
     int *brojeva_ptr = (int*) arg;
@@ -55,7 +55,9 @@ void* addition(void* arg){
     for(int i = 0; i < brojeva; i++){
       sum = sum + global_variable[i];
     }
+    cout << "------------------------------" << endl;
     cout << "Zbroj je: " << sum << endl;
+    cout << "------------------------------" << endl;
     sum = 0;
     usage = false;
   pthread_exit(0);
@@ -106,7 +108,7 @@ int main(int argc, char **argv) {
       cout << "Error, thread not created\n" << pid << endl;
       exit(1);
     }
-    sleep(2);
+    sleep(1);
     if(pthread_create(&pid1,NULL,addition,&brojeva)!=0){
       cout << "Error, thread not created\n" << pid1 << endl;
       exit(1);
