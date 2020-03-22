@@ -24,6 +24,9 @@ bool usage = false;
 
 // thread function to generate random numbers from 0 to arg
 void* sum_runner(void* arg){
+  while(usage){
+    sleep(2);
+  }
   while(!usage){
     // typecasting void arg to int
     int *brojeva_ptr = (int*) arg;
@@ -35,14 +38,17 @@ void* sum_runner(void* arg){
       cout << global_variable[i] << endl;
     }
     usage = true;
-  }
 
-  pthread_exit(0);
+  pthread_exit(0); // THREAD EXITS CUZ IT CAN'T ACCESS MEMORY SO IT DOESN'T DO ANYTHING
+}
   // 0 je prenesena u pthread_join(arg,0)
 
 }
 
 void* addition(void* arg){
+  while(!usage){
+    sleep(2);
+  }
   while(usage){
     int *brojeva_ptr = (int*) arg;
     int brojeva = *brojeva_ptr;
@@ -52,7 +58,8 @@ void* addition(void* arg){
     cout << "Zbroj je: " << sum << endl;
     sum = 0;
     usage = false;
-  }
+  pthread_exit(0);
+}
 }
 
 int main(int argc, char **argv) {
@@ -67,8 +74,8 @@ int main(int argc, char **argv) {
     good = 1;
   }
 
-  int brojeva = atoi(argv[1]);
-  int limit = atoi(argv[2]);
+  int brojeva = atoi(argv[1]); // koliko brojeva treba generirati
+  int limit = atoi(argv[2]); // koliko puta treba generirati
 
 
   if(good){
@@ -93,15 +100,22 @@ int main(int argc, char **argv) {
   pthread_t pid;
   pthread_t pid1;
 
-  for(int z = 0; z <= limit-1; z++){
-    for(int i = 0; i < limit-1; i++){ // argv[2] is M (how many times threads need to run)
-      pthread_create(&pid,NULL,sum_runner,&brojeva);
-      /* &brojeva je argument koji se prosljeđuje u thread, tj onaj argument sa terminala*/
+  // limit is second argument (how many times to run)
+  for(int i = 0; i <= limit-1; i++){
+    if(pthread_create(&pid,NULL,sum_runner,&brojeva)!=0){
+      cout << "Error, thread not created\n" << pid << endl;
+      exit(1);
     }
-    pthread_create(&pid1,NULL,addition,&brojeva); // change return value later
+    sleep(2);
+    if(pthread_create(&pid1,NULL,addition,&brojeva)!=0){
+      cout << "Error, thread not created\n" << pid1 << endl;
+      exit(1);
+    } // change return value later
+    /* &brojeva je argument koji se prosljeđuje u thread, tj onaj argument sa terminala*/
+    }
 
     // do other stuff here
-  }
+//  }
 
   // wait until thread is done
   pthread_join(pid,NULL);
