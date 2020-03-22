@@ -11,8 +11,6 @@ U tu svrhu se može iskoristiti dodatna varijabla u zajedničkoj memoriji čiju 
 dretva nema pravo pristupiti zajedničkoj memoriji tada MOŽE BITI U RADNOM ČEKANJU.
 */
 #include<pthread.h>
-#include<stdio.h>
-#include<stdlib.h>
 #include<ctime>
 #include<unistd.h>
 #include<iostream>
@@ -123,8 +121,6 @@ int main(int argc, char **argv) {
   pthread_join(pid,NULL);
   pthread_join(pid1,NULL);
 
-  //cout << "Sum is " << sum << endl;
+  cout << "Program finished!"<< endl;
   return 0;
 }
-
-  /* TODO: Figure out how to properly loop threads and how to make sum work every time. */
