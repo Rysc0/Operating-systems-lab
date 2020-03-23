@@ -26,7 +26,7 @@ funkcija izađi_iz_kritičnog_odsječka(i)
   BROJ[i] = 0
 }
 
-int main(){
+int main(int argc, char **argv) {
 
   proces proc(i)          /* i  [0..n-1] */
   {
@@ -43,7 +43,8 @@ int main(){
   da se prostor za njih zauzme odjednom i podijeli među njima. Ovo je nužno zbog ograničenog
   broja segmenata i velikog broja korisnika.*/
 
-  Ovisno o opterećenju računala i broju procesa koji se pokreću, a da bi se vidjele razlike prilikom izvođenja programa može biti potrebno usporiti izvršavanje sa:
+  /* Ovisno o opterećenju računala i broju procesa koji se pokreću, a da bi se vidjele razlike
+  prilikom izvođenja programa može biti potrebno usporiti izvršavanje sa:*/
   sleep(1);
 
   nakon: ispisi (i, k, m).
