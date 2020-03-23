@@ -28,11 +28,12 @@ funkcija izađi_iz_kritičnog_odsječka(i)
 
 int main(int argc, char **argv) {
 
-  proces proc(i)          /* i  [0..n-1] */
-  {
-    za k = 1 do 5 čini {
+  int procesa = atoi(argv[1]);
+
+  for(int i = 0; i < procesa; i++){
+    for(int k = 1; k < 6; k++){
       uđi u kritični odsječak
-      za m = 1 do 5 čini {
+      for(int m = 1; m < 6; i++){
         ispiši (i, k, m)
       }
       izađi iz kritičnog odsječka
