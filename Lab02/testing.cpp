@@ -6,6 +6,7 @@
 #include<cstdlib>
 #include<unistd.h>
 #include <sys/wait.h>
+#include <iostream>
 
 int Id; /* identifikacijski broj segmenta */
 int *ZajednickaVarijabla;
@@ -30,8 +31,10 @@ void Citac()
 void brisi(int sig)
 {
    /* oslobađanje zajedničke memorije */
+   printf("Oslobadjanje zajednicke memorije...\n");
    shmdt(ZajednickaVarijabla);
    shmctl(Id, IPC_RMID, NULL);
+   printf("Gotovo...\n");
    exit(0);
 
 }

@@ -1,52 +1,48 @@
+/*Ostvariti sustav paralelnih procesa/dretava. Struktura procesa/dretava dana je
+sljedećim pseudokodom:*/
 #include <stdio.h>
-#include <pthread.h>
-#include <unistd.h>
-#include<stdlib.h>
-#include<ctime>
-#include<unistd.h>
-#include<iostream>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/wait.h>
+#include <iostream>
+#include <cstdlib>        /*exit() */
+#include <unistd.h>      /*fork()*/
+#include <sys/wait.h>  /* wait()*/
+using namespace std;
 
-int ZajednickaVarijabla;
+int *ptr;
 
-void *Pisac(void *x)
-{
-   ZajednickaVarijabla = *((int*)x);
+void f(){
+  cout << "Ide polje" << endl;
+  for(int i=0;i<5;i++){
+    ptr[i] = 0;
+    cout << ptr[i] << endl;
+  }
 }
 
-void *Citac(void *x)
-{
-   int i;
+int main(int argc, char **argv) {
 
-   do {
-      i = ZajednickaVarijabla;
-      printf("Procitano %d\n", i);
-      sleep(1);
-   } while (i == 0);
+  int procesa = atoi(argv[1]);
+  int array[procesa];
+  int polje[5];
+  ptr = polje;
+  // STARTING PARALEL PROCCESES
+  for(int i = 0; i < procesa; i++){
+    if (fork() == 0) {
+      // child code
+       cout << "I'm child proccess with pid: " << getpid() << endl;
+       exit(0);
+    }
+  }
 
-   printf("Procitano je: %d\n", i);
-}
+  cout << "Waited on proccess " << endl;
+  for(int i = 0; i < procesa; i++){
+    wait(NULL);
+  }
+   f();
 
-int main()
-{
-   int i;
-   pthread_t thr_id[2];
 
-   ZajednickaVarijabla = 0;
-   i=123;
-   
-   /* pokretanje dretava */
-   if (pthread_create(&thr_id[0], NULL, Citac, NULL) != 0) {
-      printf("Greska pri stvaranju dretve!\n");
-      exit(1);
-   }
-   sleep(5);
-   if (pthread_create(&thr_id[1], NULL, Pisac, &i) != 0) {
-      printf("Greska pri stvaranju dretve!\n");
-      exit(1);
-   }
-
-   pthread_join(thr_id[0], NULL);
-   pthread_join(thr_id[1], NULL);
-
-   return 0;
+  return 0;
 }
