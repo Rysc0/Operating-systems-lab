@@ -6,7 +6,8 @@ sljedećim pseudokodom:*/
 #include<sys/wait.h>  /* wait()*/
 using namespace std;
 
-zajedničke varijable: TRAŽIM[0..n-1], BROJ[0..n-1]
+// zajedničke varijable: TRAŽIM[0..n-1], BROJ[0..n-1]
+int proces[2],prioritet[2];
 
 funkcija uđi_u_kritični_odsječak(i)
 {
@@ -27,9 +28,18 @@ funkcija izađi_iz_kritičnog_odsječka(i)
 }
 
 int main(int argc, char **argv) {
-
+  // extracting second argument - number of processes to be spawned
   int procesa = atoi(argv[1]);
 
+
+  // TAKING SHARED MEMORY
+  /* Ako se program rješava s procesima tada treba zajedničke varijable tako organizirati
+  da se prostor za njih zauzme odjednom i podijeli među njima. Ovo je nužno zbog ograničenog
+  broja segmenata i velikog broja korisnika.*/
+
+  // STARTING PARALEL PROCCESES
+
+  // LAMPORT'S ALGORITHM IMPLEMENTATION
   for(int i = 0; i < procesa; i++){
     for(int k = 1; k < 6; k++){
       uđi u kritični odsječak
@@ -40,15 +50,9 @@ int main(int argc, char **argv) {
     }
   }
 
-  /* Ako se program rješava s procesima tada treba zajedničke varijable tako organizirati
-  da se prostor za njih zauzme odjednom i podijeli među njima. Ovo je nužno zbog ograničenog
-  broja segmenata i velikog broja korisnika.*/
-
-  /* Ovisno o opterećenju računala i broju procesa koji se pokreću, a da bi se vidjele razlike
-  prilikom izvođenja programa može biti potrebno usporiti izvršavanje sa:*/
-  sleep(1);
-
   nakon: ispisi (i, k, m).
+
+  // FREE SHARED MEMORY AND CLEANUP
 
   return 0;
 }
