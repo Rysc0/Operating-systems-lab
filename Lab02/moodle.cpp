@@ -12,37 +12,78 @@ sljedećim pseudokodom:*/
 #include <sys/wait.h>  /* wait()*/
 using namespace std;
 
-int *ptr;
+int *ptr,*ptr1,*Nprocesa;
 
-void f(){
+void f(int polje[], int size){
   cout << "Ide polje" << endl;
   for(int i=0;i<5;i++){
     ptr[i] = 0;
     cout << ptr[i] << endl;
   }
+  cout << "Idu PID-ovi" << endl;
+  for(int i = 0; i<size;i++){
+    cout << polje[i] << endl;
+  }
+}
+
+void funkcija(){
+  printf("\x1B[31mNEXT PROCCESS...\033[0m\n");
 }
 
 int main(int argc, char **argv) {
 
   int procesa = atoi(argv[1]);
   int array[procesa];
-  int polje[5];
-  ptr = polje;
+  int pid[procesa];
+  ptr = array;
+  ptr1 = pid;
+  //Nprocesa = procesa;
   // STARTING PARALEL PROCCESES
   for(int i = 0; i < procesa; i++){
     if (fork() == 0) {
       // child code
-       cout << "I'm child proccess with pid: " << getpid() << endl;
-       exit(0);
+      pid[i] = getpid();
+      cout << pid[i] << endl;
+      cout << "I'm child proccess with pid: " << getpid() << endl;
+      for(int i = 0; i < procesa; i++){
+        funkcija();
+        //sleep(1);
+        for(int k = 1; k <=5; k++){
+          //uđi_u_kritični_odsječak(k);
+          for(int m = 1; m <=5; m++){
+            //ispisi(i,k,m);
+            cout << "Proces " << i << " K.O. br: " << k << " (" << m << "/5)" << endl;
+          }
+          // izađi iz kritičnog odsječka
+        }
+      }
+      exit(0);
     }
   }
-
-  cout << "Waited on proccess " << endl;
+  /*cout << "Resavam PIDove: " << endl;
   for(int i = 0; i < procesa; i++){
+    cout << pid[i] << endl;
+  }
+*/
+  sleep(4);
+  for(int i = 0; i < procesa; i++){
+    cout << "Waited on proccess " << i << endl;
     wait(NULL);
   }
-   f();
+  // f(pid,procesa);
 
+
+/*
+    // prototip proces proc(i)
+    for(int i = 0; i < procesa; i++){
+      for(int k = 1; k <=5; k++){
+        uđi_u_kritični_odsječak(k);
+        for(int m = 1; m <=5; m++){
+          ispisi(i,k,m);
+        }
+        izađi_iz_kritičnog_odsječka();
+      }
+    }*/
 
   return 0;
 }
