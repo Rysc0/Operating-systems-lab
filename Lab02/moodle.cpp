@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
       pid[i] = getpid();
       cout << pid[i] << endl;
       cout << "I'm child proccess with pid: " << getpid() << endl;
-      for(int i = 0; i < procesa; i++){
+      //for(int i = 0; i < procesa; i++){
         funkcija();
         //sleep(1);
         for(int k = 1; k <=5; k++){
@@ -56,16 +56,16 @@ int main(int argc, char **argv) {
           }
           // izađi iz kritičnog odsječka
         }
-      }
+      //}
       exit(0);
     }
   }
   /*cout << "Resavam PIDove: " << endl;
   for(int i = 0; i < procesa; i++){
     cout << pid[i] << endl;
-  }
+  //}
 */
-  sleep(4);
+  sleep(2);
   for(int i = 0; i < procesa; i++){
     cout << "Waited on proccess " << i << endl;
     wait(NULL);
@@ -73,17 +73,7 @@ int main(int argc, char **argv) {
   // f(pid,procesa);
 
 
-/*
-    // prototip proces proc(i)
-    for(int i = 0; i < procesa; i++){
-      for(int k = 1; k <=5; k++){
-        uđi_u_kritični_odsječak(k);
-        for(int m = 1; m <=5; m++){
-          ispisi(i,k,m);
-        }
-        izađi_iz_kritičnog_odsječka();
-      }
-    }*/
+
 
   return 0;
 }
