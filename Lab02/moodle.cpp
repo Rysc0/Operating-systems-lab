@@ -42,6 +42,15 @@ void funkcija(){
   printf("\x1B[31mNEXT PROCCESS...\033[0m\n");
 }
 
+void brisi(int sig){
+  shmdt(array);
+  shmdt(broj);
+  shmctl(id[0],IPC_RMID,NULL);
+  shmctl(id[1],IPC_RMID,NULL);
+  exit(1);
+}
+
+
 int main(int argc, char **argv) {
 
   procesa = atoi(argv[1]);
@@ -62,11 +71,13 @@ int main(int argc, char **argv) {
     cout << "ERROR, NO SHARED MEMORY!" << endl;
     exit(1);
   }
+  cout << "SHMID_1 = " << id[0] << endl;
   id[1] = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
   if(id[1] == -1){
     cout << "ERROR, NO SHARED MEMORY!" << endl;
     exit(1);
   }
+  cout << "SHMID_2 = " << id[1] << endl;
 
   array = (int*) shmat(id[0],NULL,0);
   broj = (int*) shmat(id[1],NULL,0);
@@ -75,9 +86,9 @@ int main(int argc, char **argv) {
   zadnji      treba ih uključit u dijeljenu memoriju
 */
 
-/*
+
   sigset(SIGINT, brisi);//u slučaju prekida briši memoriju
-  */
+
 
   // STARTING PARALEL PROCCESES
   for(int i = 0; i < procesa; i++){
@@ -108,11 +119,12 @@ int main(int argc, char **argv) {
     wait(NULL);
   }
 
-  shmdt(array);
+  brisi(SIGINT);
+  /*shmdt(array);
   shmdt(broj);
   shmctl(id[0],IPC_RMID,NULL);
   shmctl(id[1],IPC_RMID,NULL);
-
+*/
 
 
   return 0;
