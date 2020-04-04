@@ -13,7 +13,6 @@ moodle.cpp is implementation of Lamport's backery algorithm using processes.
 It uses one input argument to determine how many processes should be created.
 
 
-Moodle.cpp is the one to go for.
 Waiting for response about shared memory segments. Currently I use 2 shared
 memory segments and I should use only 1. Didn't found suitable solution with 1
 segment so I'll be fixing bugs and cleaning the code while waiting for response.
