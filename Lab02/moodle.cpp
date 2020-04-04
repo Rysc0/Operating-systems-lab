@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
         // izađi iz kritičnog odsječka
         izadji_iz_kriticnog_odsjecka(i);
       }
-      exit(0);
+      exit(1);
     }
   }
 
