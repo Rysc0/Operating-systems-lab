@@ -12,7 +12,7 @@ sljedećim pseudokodom:*/
 #include <sys/wait.h>  /* wait()*/
 using namespace std;
 
-int *array, id, *broj, procesa, zadnji = 0;
+int *array, id, *broj, procesa;
 
 int max(){
   int max = broj[0];
@@ -21,7 +21,7 @@ int max(){
       max = broj[i];
     }
   }
-  //cout << "max je: " << max << endl;
+
   return max;
 }
 
@@ -101,8 +101,8 @@ int main(int argc, char *argv[]) {
     if (fork() == 0) {
       // child code
       cout << "\033[3;40;92mChild with PID: " << getpid() << " created!\033[0m" << endl;
-
       sleep(1);
+
       for(int k = 1; k <=5; k++){
         kriticni_odsjecak(i);
 
@@ -120,7 +120,6 @@ int main(int argc, char *argv[]) {
 
   sleep(1);
   for(int i = 0; i < procesa; i++){
-  //  cout << "Waited on proccess " << i << endl;
     wait(NULL);
   }
 
