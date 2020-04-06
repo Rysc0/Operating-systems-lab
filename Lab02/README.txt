@@ -1,6 +1,6 @@
 Main codes are:
 - Two_threads.cpp
-- moodle.cpp
+- milic_says.cpp
 
 Two_threads.cpp is code that uses two threads to operate on global memory.
 First thread is generating X random numbers (X - amount of numbers to generate
@@ -9,7 +9,7 @@ Second thread is calculating sum of generated numbers.
 Second argument is number that's determining how many times numbers should be
 generated and calculated.
 
-moodle.cpp is implementation of Lamport's backery algorithm using processes.
+milic_says.cpp is implementation of Lamport's backery algorithm using processes.
 It uses one input argument to determine how many processes should be created.
 
 
