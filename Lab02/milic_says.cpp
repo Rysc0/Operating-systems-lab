@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     cout << "ERROR, NO SHARED MEMORY!" << endl;
     exit(1);
   }
-  cout << "SHMID = " << id << endl;
+  cout << "\033[1;40;93mSHMID = " << id << "\033[0m" << endl;
 
 
   array = (int*) shmat(id,NULL,0);
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
     broj[i] = i;
     if (fork() == 0) {
       // child code
-      cout << "\x1B[33mChild with PID: \033[0m" << getpid() << " created!" << endl;
+      cout << "\033[3;40;92mChild with PID: " << getpid() << " created!\033[0m" << endl;
 
       sleep(1);
       for(int k = 1; k <=5; k++){
