@@ -12,21 +12,29 @@ sljedećim pseudokodom:*/
 #include <sys/wait.h>  /* wait()*/
 using namespace std;
 
-int *array, id[2], *broj,procesa,zadnji = 0;
+
+int id, procesa, zadnji = 0;
+void *ptr_1, *ptr_2;
+
+typedef struct zajednicke_varijable{
+  int *array;
+  int *broj;
+}var;
+var memorija;
 
 void kriticni_odsjecak(int i){
   //int *ptr = procesa;
   int j;
-  array[i] = 1;
-  broj[i] = zadnji + 1;
-  zadnji = broj[i];
-  array[i] = 0;
+  memorija.array[i] = 1;
+  memorija.broj[i] = zadnji + 1;
+  zadnji = memorija.broj[i];
+  memorija.array[i] = 0;
 
   for(j = 0; j < procesa; j++){
-    while(array[j] != 0){
+    while(memorija.array[j] != 0){
 
     }
-    while(broj[j] != 0 && (broj[j] < broj[i] || (broj[j] == broj[i]) && j < i)){
+    while(memorija.broj[j] != 0 && (memorija.broj[j] < memorija.broj[i] || (memorija.broj[j] == memorija.broj[i]) && j < i)){
 
     }
   }
@@ -35,15 +43,14 @@ void kriticni_odsjecak(int i){
 
 
 void izadji_iz_kriticnog_odsjecka(int i){
-  broj[i] = 0;
+  memorija.broj[i] = 0;
 }
 
 
 void brisi(int sig){
-  shmdt(array);
-  shmdt(broj);
-  shmctl(id[0],IPC_RMID,NULL);
-  shmctl(id[1],IPC_RMID,NULL);
+  shmdt(memorija.array);
+  shmdt(memorija.broj);
+  shmctl(id,IPC_RMID,NULL);
   exit(1);
 }
 
@@ -57,27 +64,22 @@ int main(int argc, char **argv) {
       exit(-1);
     }
 
-
   int polje_trazim[procesa];
-  array = polje_trazim;
+  memorija.array = polje_trazim;
   int polje_broj[procesa];
-  broj = polje_broj;
+  memorija.broj = polje_broj;
+  //ptr_1 = var.array;
+  //ptr_2 = var.broj;
 
-  id[0] = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
-  if(id[0] == -1){
+  id = shmget(IPC_PRIVATE,sizeof(zajednicke_varijable),0600);
+  if(id == -1){
     cout << "ERROR, NO SHARED MEMORY!" << endl;
     exit(1);
   }
-  cout << "SHMID_1 = " << id[0] << endl;
-  id[1] = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
-  if(id[1] == -1){
-    cout << "ERROR, NO SHARED MEMORY!" << endl;
-    exit(1);
-  }
-  cout << "SHMID_2 = " << id[1] << endl;
+  cout << "SHMID_1 = " << id << endl;
 
-  array = (int*) shmat(id[0],NULL,0);
-  broj = (int*) shmat(id[1],NULL,0);
+  memorija.array = (int*) shmat(id,NULL,0);
+  memorija.broj = (int*) shmat(id,NULL,0);
 /*
   procesa
   zadnji      treba ih uključit u dijeljenu memoriju
@@ -89,12 +91,9 @@ int main(int argc, char **argv) {
 
   // STARTING PARALEL PROCCESES
   for(int i = 0; i < procesa; i++){
-    broj[i] = i;
+    memorija.broj[i] = i;
     if (fork() == 0) {
       // child code
-      //cout << "I'm child proccess with pid: " << getpid() << endl;
-
-
       for(int k = 1; k <=5; k++){
         kriticni_odsjecak(i);
 

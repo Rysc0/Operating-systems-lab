@@ -12,22 +12,16 @@ sljedećim pseudokodom:*/
 #include <sys/wait.h>  /* wait()*/
 using namespace std;
 
-int *array, id[2], *broj,*procesa_ptr,*zadnji_ptr,procesa,zadnji = 0;
+int *array, id, *broj, *procesi, *zadnji;
 
 void kriticni_odsjecak(int i){
-  //int *ptr = procesa;
-  //int zadnji;
-//  zadnji = *zadnji_ptr;
-  //int procesa;
-  //procesa = *procesa_ptr;
-
   int j;
   array[i] = 1;
-  broj[i] = *zadnji_ptr + 1;
-  *zadnji_ptr = broj[i];
+  broj[i] = *zadnji + 1;
+  *zadnji = broj[i];
   array[i] = 0;
 
-  for(j = 0; j < procesa; j++){
+  for(j = 0; j < *procesi; j++){
     while(array[j] != 0){
 
     }
@@ -50,14 +44,14 @@ void funkcija(){
 void oslobodi_memoriju(int sig){
   shmdt(array);
   shmdt(broj);
-  shmdt(procesa_ptr);
-  shmdt(zadnji_ptr);
-  shmctl(id[0],IPC_RMID,NULL);
+  shmdt(procesi);
+  shmdt(zadnji);
+  shmctl(id,IPC_RMID,NULL);
   exit(0);
 }
 
 int main(int argc, char **argv) {
-  //int procesa;
+  int procesa;
   procesa = atoi(argv[1]);
 
   if(procesa > 10){
@@ -70,33 +64,22 @@ int main(int argc, char **argv) {
   array = polje_trazim;
   int polje_broj[procesa];
   broj = polje_broj;
+  procesi = &procesa;
 
-  id[0] = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
-  if(id[0] == -1){
+  id = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
+  if(id == -1){
     cout << "ERROR, NO SHARED MEMORY!" << endl;
     exit(1);
   }
-  /*id[1] = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
-  if(id[1] == -1){
-    cout << "ERROR, NO SHARED MEMORY!" << endl;
-    exit(1);
-  }
-*//*
-  int zadnji = 0;
-  zadnji_ptr = &zadnji;*/
-  //procesa_ptr = &procesa;
-
-  array = (int*) shmat(id[0],NULL,0);
-  broj = (int*) shmat(id[0],NULL,0);
-  procesa_ptr = (int*) (shmat(id[0],NULL,0));
-  zadnji_ptr = (int*) (shmat(id[0],NULL,0));
-/*
-  procesa
-  zadnji      treba ih uključit u dijeljenu memoriju
-*/
 
 
-  sigset(SIGINT, oslobodi_memoriju);//u slučaju prekida briši memoriju
+  array = (int*) shmat(id,NULL,0);
+  broj = (int*) shmat(id,NULL,0);
+  procesi = (int*) (shmat(id,NULL,0));
+  zadnji = (int*) (shmat(id,NULL,0));
+  *zadnji = 0;
+
+  sigset(SIGINT, oslobodi_memoriju);  //u slučaju prekida briši memoriju
 
 
   // STARTING PARALEL PROCCESES
@@ -124,15 +107,11 @@ int main(int argc, char **argv) {
 
   sleep(1);
   for(int i = 0; i < procesa; i++){
-    //cout << "Waited on proccess " << i << endl;
+    cout << "Waited on proccess " << i << endl;
     wait(NULL);
   }
 
-
   oslobodi_memoriju(0);
-
-
-
 
   return 0;
 }

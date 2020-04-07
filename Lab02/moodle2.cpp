@@ -12,7 +12,7 @@ sljedećim pseudokodom:*/
 #include <sys/wait.h>  /* wait()*/
 using namespace std;
 
-int *array, id[2], *broj,procesa,zadnji = 0;
+int *array, id, *broj,procesa,zadnji = 0;
 
 void kriticni_odsjecak(int i){
   //int *ptr = procesa;
@@ -38,15 +38,9 @@ void izadji_iz_kriticnog_odsjecka(int i){
   broj[i] = 0;
 }
 
-
-void brisi(int sig){
-  shmdt(array);
-  shmdt(broj);
-  shmctl(id[0],IPC_RMID,NULL);
-  shmctl(id[1],IPC_RMID,NULL);
-  exit(1);
+void funkcija(){
+  printf("\x1B[31mNEXT PROCCESS...\033[0m\n");
 }
-
 
 int main(int argc, char **argv) {
 
@@ -63,37 +57,31 @@ int main(int argc, char **argv) {
   int polje_broj[procesa];
   broj = polje_broj;
 
-  id[0] = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
-  if(id[0] == -1){
+  id = shmget(IPC_PRIVATE,sizeof(int)*10,0600);
+  if(id == -1){
     cout << "ERROR, NO SHARED MEMORY!" << endl;
     exit(1);
   }
-  cout << "SHMID_1 = " << id[0] << endl;
-  id[1] = shmget(IPC_PRIVATE,sizeof(int)*procesa,0600);
-  if(id[1] == -1){
-    cout << "ERROR, NO SHARED MEMORY!" << endl;
-    exit(1);
-  }
-  cout << "SHMID_2 = " << id[1] << endl;
 
-  array = (int*) shmat(id[0],NULL,0);
-  broj = (int*) shmat(id[1],NULL,0);
+
+  array = (int*) shmat(id,NULL,0);
+  broj = (int*) shmat(id,NULL,0);
 /*
   procesa
   zadnji      treba ih uključit u dijeljenu memoriju
 */
 
-
+/*
   sigset(SIGINT, brisi);//u slučaju prekida briši memoriju
-
+  */
 
   // STARTING PARALEL PROCCESES
   for(int i = 0; i < procesa; i++){
     broj[i] = i;
     if (fork() == 0) {
       // child code
-      //cout << "I'm child proccess with pid: " << getpid() << endl;
-
+      cout << "I'm child proccess with pid: " << getpid() << endl;
+      funkcija();
 
       for(int k = 1; k <=5; k++){
         kriticni_odsjecak(i);
@@ -106,7 +94,7 @@ int main(int argc, char **argv) {
         // izađi iz kritičnog odsječka
         izadji_iz_kriticnog_odsjecka(i);
       }
-      exit(1);
+      exit(0);
     }
   }
 
@@ -116,12 +104,11 @@ int main(int argc, char **argv) {
     wait(NULL);
   }
 
-  brisi(SIGINT);
-  /*shmdt(array);
+  shmdt(array);
   shmdt(broj);
-  shmctl(id[0],IPC_RMID,NULL);
-  shmctl(id[1],IPC_RMID,NULL);
-*/
+  shmctl(id,IPC_RMID,NULL);
+
+
 
 
   return 0;

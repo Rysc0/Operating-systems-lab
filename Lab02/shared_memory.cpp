@@ -11,12 +11,13 @@
 #include <sys/wait.h>  /* wait()*/
 using namespace std;
 
-int *array, id;
+int *array, id, *varijabla;
 
 int main(){
 
   int polje[10];
   array = polje;
+
   srand(time(NULL));
 
   id = shmget(IPC_PRIVATE,sizeof(int)*10,0600);
@@ -26,8 +27,12 @@ int main(){
   }
   //int broj = (int*) array;
   array = (int*) shmat(id,NULL,0);
+  varijabla = (int*) shmat(id,NULL,0);
+  *varijabla = (int)5;
 
   if(fork() == 0){
+    *varijabla = *varijabla + 10;
+    cout << "Iznos varijable je: " << *varijabla << endl;
     cout << "input values..." << endl;
     for(int i = 0; i < 10; i++){
       array[i] = rand()%100;
@@ -36,14 +41,15 @@ int main(){
   }
 //  else cout << "First proces colapsed" << endl;
 
-  //if(fork() == 0){
-    //sleep(5);
-    //cout << "Array..." << endl;
+  if(fork() == 0){
+    sleep(5);
+    cout << "Array..." << endl;
     cout << "Output values..." << endl;
     for(int i = 0; i < 10; i++){
       cout << i << "\t" << array[i] << endl;
     }
-//  }
+    cout << "Varijabla je: " << *varijabla << endl;
+  }
 
   //else cout << "second proces colapsed" << endl;
 
@@ -52,6 +58,7 @@ int main(){
 
 
   shmdt(array);
+  shmdt(varijabla);
   shmctl(id,IPC_RMID,NULL);
 
 
