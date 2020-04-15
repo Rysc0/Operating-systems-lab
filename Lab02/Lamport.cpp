@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
     wait(NULL);
   }
 
-  brisi(SIGINT);
+  brisi(0);
 
   return 0;
 }
