@@ -1,0 +1,10 @@
+https://www3.physnet.uni-hamburg.de/physnet/Tru64-Unix/HTML/APS33DTE/DOCU_004.HTM#sem-shared-mem-sec
+
+man:
+    shm_get
+    shm_open
+    mmap
+    sem_init
+    sem_post
+    sem_wait
+    
