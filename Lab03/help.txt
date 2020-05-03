@@ -8,3 +8,6 @@ man:
     sem_post
     sem_wait
     
+https://www.geeksforgeeks.org/posix-shared-memory-api/
+
+https://pubs.opengroup.org/onlinepubs/009695399/functions/mmap.html
