@@ -6,27 +6,59 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <cstdlib>
 #include <signal.h>
 #include <sys/sem.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <pthread.h>
-#include <cstdlib>
 using namespace std;
 
-int m_procesa; 
-int n_brojeva;
-int shared_memory_id;
 
+// struktura semafora + memorija
 struct memorija{
-  int ULAZ,IZLAZ;
-  int BUFFER[1000];
-  sem_t semafor1;
-  sem_t semafor2;
+  int ULAZ, IZLAZ, BUFFER[100];
+  sem_t semafor1, semafor2;
+  // semafori - 1 za pristup bufferu, 1 za komunikaciju
 }
 
 *ptr = new memorija;
+
+int shared_memory_id;
+
+void generator(int n_brojeva){
+   //dok (nije generirano n zadataka){
+  do{
+    ptr->BUFFER[ptr->ULAZ] = rand()%100000000;
+    cout << "Generiran broj: " << ptr->BUFFER[ptr->ULAZ] << endl;
+    sem_post(&ptr->semafor1);
+    sem_wait(&ptr->semafor2);
+    n_brojeva--;
+  }while(n_brojeva>0);
+}
+
+void calculator(int number,int n_brojeva){
+
+  long int zbroj = 0; // veliki su brojevi
+  do{
+    sem_wait(&ptr->semafor1);
+
+    int procitani_broj = ptr->BUFFER[ptr->IZLAZ];
+    cout << "Proces " << number << " je preuzeo broj/zadatak " << ptr->BUFFER[ptr->IZLAZ] << endl;
+    
+    sem_post(&ptr->semafor2);
+
+    for(int i = 0; i < procitani_broj; i++){
+      zbroj = zbroj + i;
+    }
+    cout << "Proces " << number << "\t" << "Broj " << procitani_broj << "\t" << "Zbroj = " << zbroj << endl;
+    zbroj = 0;
+
+  }while (n_brojeva>=0);
+      
+}
+
 
 void brisi_memoriju(int sig){
   shmdt(ptr);
@@ -39,36 +71,6 @@ void unisti_semafore(){
   sem_destroy(&ptr->semafor2);
 }
 
-void generator(){
-   //dok (nije generirano n zadataka){
-  do{
-    ptr->BUFFER[ptr->ULAZ] = rand()%100000000;
-    cout << "Generiran broj: " << ptr->BUFFER[ptr->ULAZ] << endl;
-    sem_post(&ptr->semafor1);
-    sem_wait(&ptr->semafor2);
-    n_brojeva--;
-  }while(n_brojeva>0);
-}
-
-void calculator(int number){
-
-  long int zbroj = 0;
-  do{
-    sem_wait(&ptr->semafor1);
-    int procitani_broj = ptr->BUFFER[ptr->IZLAZ];
-    cout << "Proces " << number << " je preuzeo broj/zadatak " << ptr->BUFFER[ptr->IZLAZ] << endl;
-    sem_post(&ptr->semafor2);
-    for(int i = 0; i < procitani_broj; i++){
-      zbroj = zbroj + i;
-    }
-    cout << "Proces " << number << "\t" << "Broj " << procitani_broj << "\t" << "Zbroj = " << zbroj << endl;
-    zbroj = 0;
-  }while (n_brojeva>=0);
-      
-}
-
-
-
 
 
 
@@ -77,14 +79,14 @@ void calculator(int number){
 int main(int argc, char *argv[]){
 
 if(argc != 3){
-  cout << "ERROR, must have 3 arguments!" << endl;
+  cout << "ERROR, must have 3 arguments! Arg 2 & 3 must be >0" << endl;
   exit(-1);
 }    
 
 srand(time(NULL));
 
-m_procesa = atoi(argv[1]);
-n_brojeva = atoi(argv[2]);
+int m_procesa = atoi(argv[1]);
+int n_brojeva = atoi(argv[2]);
   
 cout << "Proces generator je započeo s radom!" << endl;
 cout << "Treba generirati " << n_brojeva << "brojeva/zadataka!" << endl;
@@ -117,16 +119,16 @@ ptr->IZLAZ = 0;
 
 // pokreni proces generator
 if(fork()==0){
-  generator();
-  exit(0);
+  generator(n_brojeva);
+  exit(1);
 }
 
 //pokreni m procesa racunaj;   
 for(int i = 0; i < m_procesa; i++){
   if(fork() == 0){
     cout << "Proces " << i << " je startao!" << endl;
-    calculator(i);      
-    exit(0);
+    calculator(i,n_brojeva);      
+    exit(1);
   }
 }
 
