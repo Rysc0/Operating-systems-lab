@@ -54,7 +54,7 @@ void calculator(int number,int n_brojeva){
     cout << "Proces " << number << "\t" << "Broj " << procitani_broj << "\t" << "Zbroj = " << zbroj << endl;
     zbroj = 0;
 
-  }while (n_brojeva>=0);
+  }while (n_brojeva >= 0);
       
 }
 
@@ -85,7 +85,7 @@ srand(time(NULL));
 int m_procesa = atoi(argv[1]);
 int n_brojeva = atoi(argv[2]);
 
-if(((m_procesa<=0)||(n_brojeva<=0))||((m_procesa<=0)&&(n_brojeva<=0))){
+if(((m_procesa <= 0) || (n_brojeva <= 0)) || ((m_procesa <= 0) && (n_brojeva <= 0))){
     cout << "Input arguments not in scope!" << endl;
     exit(-1);
   }
@@ -118,7 +118,7 @@ ptr->IZLAZ = 0;
 
 
 // pokreni proces generator
-if(fork()==0){
+if(fork() == 0){
   cout << "START ----> GENERATOR ----> " << n_brojeva << " TASKS NEEDED!" << endl;
   generator(n_brojeva);
   exit(1);
@@ -135,7 +135,7 @@ for(int i = 0; i < m_procesa; i++){
 
 
 
-while(n_brojeva>=0){
+while(n_brojeva >= 0){
   n_brojeva--;
 }
 sleep(1);

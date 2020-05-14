@@ -16,7 +16,6 @@
 using namespace std;
 
 
-
 // struktura semafora + memorija
 struct memorija{
   int ULAZ, IZLAZ, UKUPNO, BUFFER[5];
@@ -29,57 +28,44 @@ int semafor_id;
 
 int semafor_operation(int number,int operation){
   struct sembuf Semafor;
-  Semafor.sem_num=number;
-  Semafor.sem_op=operation;
-  Semafor.sem_flg=0;
+  Semafor.sem_num = number;
+  Semafor.sem_op = operation;
+  Semafor.sem_flg = 0;
   return semop(semafor_id, &Semafor, 1);
 }
 
 void producer (int producer_id, int amount_of_numbers){
   
   for(int i = 0; i < amount_of_numbers; i++){
+
     semafor_operation(2,-1);
     semafor_operation(1,-1);
-
     srand(time(NULL));
-
-    ptr->BUFFER[ptr->ULAZ]=1+rand()%1000;
-
+    ptr->BUFFER[ptr->ULAZ] = 1+rand()%1000;
     sleep(1);
-
-    cout << "Proizvodac " << producer_id << " je poslao " << ptr->BUFFER[ptr->ULAZ] << endl;
-
-    ptr->ULAZ=(ptr->ULAZ+1) %5;
-
+    cout << "Proizvodac " << producer_id << " salje " << ptr->BUFFER[ptr->ULAZ] << endl;
+    ptr->ULAZ = (ptr->ULAZ+1) %5;
     semafor_operation(1, 1);
     semafor_operation(3, 1);
-
-
   }
 
-  cout << "Proizvodac " << producer_id << " je gotov sa slanjem " << endl;
+  cout << "Proizvodac " << producer_id << " je zavrsio sa slanjem " << endl;
   sleep(1);
 }
 
 
 void consumer (int number_of_producers, int amount_of_numbers){
   
-  int zbroj=0;
-  int temp = number_of_producers*amount_of_numbers;
+  int zbroj = 0;
+  int temp = number_of_producers * amount_of_numbers;
   for(int i = 0; i < temp; i++){
 
     semafor_operation(3,-1);
-
     sleep(1);
-
     cout << "Potrosac je primio: " << ptr->BUFFER[ptr->IZLAZ] << endl;
-
-    zbroj=zbroj + (ptr->BUFFER[ptr->IZLAZ]);
-
-    ptr->IZLAZ=(ptr->IZLAZ+1) %5;
-
+    zbroj = zbroj + (ptr->BUFFER[ptr->IZLAZ]);
+    ptr->IZLAZ = (ptr->IZLAZ+1) %5;
     semafor_operation(2,1);
-
   }
 
   cout << "Potrosac - zbroj brojeva koje je primio: " << zbroj << endl;
@@ -101,12 +87,11 @@ int main(int argc, char *argv[] ){
     exit(-1);
   }    
 
-  int number_of_producers = atoi(argv[1]); // number of producers
-  int amount_of_numbers = atoi(argv[2]); // how many random numbers producer needs to generate
+  int number_of_producers = atoi(argv[1]); 
+  int amount_of_numbers = atoi(argv[2]); 
  
 
-  // provjeri jel to radi
-  if(((number_of_producers<=0)||(amount_of_numbers<=0))||((number_of_producers<=0)&&(amount_of_numbers<=0))){
+  if(((number_of_producers <= 0)||(amount_of_numbers <= 0))||((number_of_producers <= 0)&&(amount_of_numbers <= 0))){
     cout << "Input arguments not in scope!" << endl;
     exit(-1);
   }
@@ -139,19 +124,22 @@ int main(int argc, char *argv[] ){
   ptr->IZLAZ = 0;
 
 
-  for(int i=0; i<number_of_producers; i++){
+  cout << "PROIZVOĐAČA = " << number_of_producers << endl;
+  cout << "BROJEVA ZA PROIZVESTI = " << amount_of_numbers << endl;
+
+  for(int i = 0; i < number_of_producers; i++){
     if(fork() == 0){
       producer(i,amount_of_numbers);
       exit(1);
     }
   }
 
-  if(fork()==0){
+  if(fork() == 0){
     consumer(number_of_producers,amount_of_numbers); 
     exit(1);
   }
 
-  for(int i=0; i<number_of_producers+1; i++){
+  for(int i = 0; i < number_of_producers+1; i++){
     wait(NULL);
   }
 
