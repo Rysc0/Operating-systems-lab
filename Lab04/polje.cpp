@@ -19,17 +19,33 @@ using namespace std;
 int counter;
 int broj[100];
 pthread_mutex_t lock;
+pthread_cond_t uvjet;
+int *ptr;
 
-void* thread_funkcija(void* arg){
+void barijera(){
   pthread_mutex_lock(&lock);
-
   cout << "Ja sam thread " << counter << endl;
   cout << "Unesi broj: ";
   cin >> broj[counter];
   counter = counter +1;
-
+   if (counter < *ptr){
+    pthread_cond_wait(&uvjet, &lock);
+  }
+  else{
+      counter = 0;
+      pthread_cond_broadcast(&uvjet);
+  }
   pthread_mutex_unlock(&lock);
-  cout << "Ispis: " << broj[counter] << endl;
+}
+
+void* thread_funkcija(void* arg){
+  //pthread_mutex_lock(&lock);
+
+  barijera();
+  //pthread_mutex_unlock(&lock);
+  
+  cout << "Thread " << counter << "Ispis: " << broj[counter] << endl;
+
   pthread_exit(0);
   // return NULL;
 }
@@ -40,13 +56,14 @@ int main(int argc, char *argv[]){
 
 int prvi_argument = atoi(argv[1]);
 pthread_t thread_id[prvi_argument];
+ptr = &prvi_argument;
 
 if (pthread_mutex_init(&lock, NULL) != 0) { 
   cout << "\n mutex init has failed\n" << endl; 
   return 1; 
 } 
 
-
+// int sem_id = sem_init(&binarni_semafor,0,0);
 for(int i = 0; i < prvi_argument; i++){
   if(pthread_create(&thread_id[i],NULL,thread_funkcija,&i)!=0){
     cout << "Error, thread not created\n" << thread_id << endl;
@@ -58,7 +75,9 @@ for(int i = 0; i < prvi_argument; i++){
   pthread_join(thread_id[i],NULL);
 }
 
-
+for(int i = 0; i < prvi_argument; i++){
+  cout << broj[i] << endl;
+}
 pthread_mutex_destroy(&lock);
 
   return 0;
