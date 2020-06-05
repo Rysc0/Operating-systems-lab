@@ -42,9 +42,13 @@ void* thread_funkcija(void* arg){
   //pthread_mutex_lock(&lock);
 
   barijera();
+  cout << "Thread " << counter << "\tIspis: " << broj[counter] << endl;
+  counter++;
   //pthread_mutex_unlock(&lock);
   
-  cout << "Thread " << counter << "Ispis: " << broj[counter] << endl;
+
+
+  
 
   pthread_exit(0);
   // return NULL;
@@ -75,9 +79,9 @@ for(int i = 0; i < prvi_argument; i++){
   pthread_join(thread_id[i],NULL);
 }
 
-for(int i = 0; i < prvi_argument; i++){
-  cout << broj[i] << endl;
-}
+// for(int i = 0; i < prvi_argument; i++){
+//   cout << broj[i] << endl;
+// }
 pthread_mutex_destroy(&lock);
 
   return 0;
