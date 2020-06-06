@@ -24,19 +24,22 @@ int br_svake_vrste;
 
 struct podaci{
   pthread_mutex_t lock;
-  int uvjet[2]; // pthread_cont_t uvjet
+  pthread_cond_t uvjet[2]; // pthread_cont_t uvjet
   int br[2] = { 0,0 };
   bool vrsta;
   int ceka[2] = { 0,0 };
   int SITI = 0;
 };
 podaci podatak;
-void *ptr;
-// ptr = &podatak;
+void *pod = new podaci;
+
+
+
 
 void udji(bool vrsta){
   pthread_mutex_lock(&podatak.lock);
   // ispis trenutnog stanja u restoranu
+  cout << "ispis 1" << endl;
   podatak.ceka[podatak.vrsta]++;
   while((podatak.br[1-podatak.vrsta]>0) || ((podatak.SITI>=moze_uci_n) && (podatak.ceka[1-podatak.vrsta]>0))){
     pthread_cond_wait(&podatak.uvjet[podatak.vrsta],&podatak.lock);
@@ -47,26 +50,37 @@ void udji(bool vrsta){
     podatak.SITI++;
   }
   // ispis trenutnog stanja u restoranu
+  cout << "ispis 2" << endl;
   pthread_mutex_unlock(&podatak.lock);
 }
 
 void izadji(bool vrsta){
   pthread_mutex_lock(&podatak.lock);
+  cout << "ispis 3" << endl;
   podatak.br[podatak.vrsta]--;
   if(podatak.br[podatak.vrsta]==0){
     podatak.SITI = 0;
     pthread_cond_broadcast(&podatak.uvjet[1-podatak.vrsta]);
   }
+  cout << "ispis 4" << endl;
   pthread_mutex_unlock(&podatak.lock);
 }
 
 
 void brisi(int sig){
-  shmdt(ptr);
+  shmdt(pod);
   shmctl(shared_memory_id, IPC_RMID, NULL);
   exit(1);
 }
 
+
+void funkcija(){
+  usleep(rand()%100);
+  udji(podatak.vrsta);
+  usleep(rand()%100);
+  izadji(podatak.vrsta);
+  exit(1);
+}
 
 int main(int argc, char *argv[]){
   
@@ -75,7 +89,7 @@ moze_uci_n = atoi(argv[1]);
 br_svake_vrste = atoi(argv[2]);
 
 cout << moze_uci_n << "\t" << br_svake_vrste << endl;
-ptr = &podatak;
+//pod = &podatak;
 
 shared_memory_id = shmget(IPC_PRIVATE, sizeof(podatak), 0600);
 if(shared_memory_id == -1){
@@ -85,10 +99,10 @@ if(shared_memory_id == -1){
 sigset(SIGINT, brisi);
 
 // popravi 
-ptr = (memorija *) shmat(shared_memory_id, NULL, 0);
+pod = shmat(shared_memory_id, NULL, 0);
 
 // generiranje procesa
-for(int i = 0; i < br_svake_vrste; i++){
+for(int i = 0; i < br_svake_vrste*2; i++){
   // napravi linux programera
   if(podatak.vrsta == true){
     if(fork()==0){
@@ -105,6 +119,14 @@ for(int i = 0; i < br_svake_vrste; i++){
   }
 }
 
+ for(int i = 0; i < br_svake_vrste*2; i++){
+  wait(NULL);
+  cout << "Gotov sam...Wait 20 sec..." << endl;
+  }
+  
+for(int i = 0; i < 10; i++){
+  sleep(1);
+}
 // funkcija(){
 //   usleep(rand()%100);
 //   programiraj;
@@ -113,10 +135,6 @@ for(int i = 0; i < br_svake_vrste; i++){
 //   jedi;
 //   izadji(vrsta);
 // }
-
-
-
-
-
+brisi(SIGINT);
   return 0;
 }
