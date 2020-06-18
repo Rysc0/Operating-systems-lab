@@ -15,7 +15,7 @@
 #include <pthread.h>
 using namespace std;
 
-// sem_t binarni_semafor;
+
 int counter;
 int broj[100];
 pthread_mutex_t lock;
