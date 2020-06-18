@@ -15,7 +15,7 @@ int *pom;
 void bar(){
 	
   pthread_mutex_lock(&l);
-  cout << "Ja sam thread " << cnt << endl;
+  cout << "Dretva " << cnt << endl;
   cout << "Unesi broj: ";
   cin >> br[cnt];
   cnt = cnt + 1;
@@ -33,11 +33,11 @@ void bar(){
 	}
 	
 
-void* thread_func(void* arg){
+void* dretva(void* arg){
   
 
   bar();
-  cout << "Thread " << cnt << "\tIspis: " << br[cnt] << endl;
+  cout << "Dretva " << cnt << " --> Broj: " << br[cnt] << endl;
   cnt++;
   
   pthread_exit(0);
@@ -49,24 +49,21 @@ int main(int argc, char *argv[]){
 
 
 int N = atoi(argv[1]);
-pthread_t thread_id[N];
+pthread_t dretva_id[N];
 pom = &N;
 
-if (pthread_mutex_init(&l, NULL) != 0) { 
-  cout << "\n mutex init has failed\n" << endl; 
-  return 1; 
-	} 
+pthread_mutex_init(&l, NULL);
 
 
 for(int i = 0; i < N; i++){
-  if(pthread_create(&thread_id[i],NULL,thread_func,&i)!=0){
-    cout << "Error, thread not created\n" << thread_id << endl;
+  if(pthread_create(&dretva_id[i],NULL,dretva,&i)!=0){
+    cout << "Dretva nije kreirana\n" << dretva_id << endl;
     exit(1);
   		}  
 	}
 
 for(int i = 0; i < N; i++){
-	pthread_join(thread_id[i],NULL);
+	pthread_join(dretva_id[i],NULL);
 	}
 
 
