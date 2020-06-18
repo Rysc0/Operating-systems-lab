@@ -7,7 +7,7 @@
 using namespace std;
 
 int cnt;
-int br[100];
+int br[50];
 pthread_mutex_t l;
 pthread_cond_t uv;
 int *pom;
