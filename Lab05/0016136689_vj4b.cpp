@@ -104,7 +104,7 @@ void func(int type) {
         usleep(rand()%100);
         ulazak(type);
         usleep(rand()%100);
-        izlazak(v);
+        izlazak(type);
 }
 
 void del(int sig) {
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
         pthread_cond_init(&pom->uv[0], &uv_atr);
         pthread_cond_init(&pom->uv[1], &uv_atr);
         
-        int i;
+     
         bool type = true;
         int i;
         
