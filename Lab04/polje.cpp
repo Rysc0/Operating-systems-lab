@@ -32,26 +32,17 @@ void barijera(){
     pthread_cond_wait(&uvjet, &lock);
   }
   else{
-      counter = 0;
-      pthread_cond_broadcast(&uvjet);
+    counter = 0;
+    pthread_cond_broadcast(&uvjet);
   }
   pthread_mutex_unlock(&lock);
 }
 
 void* thread_funkcija(void* arg){
-  //pthread_mutex_lock(&lock);
-
   barijera();
   cout << "Thread " << counter << "\tIspis: " << broj[counter] << endl;
   counter++;
-  //pthread_mutex_unlock(&lock);
-  
-
-
-  
-
   pthread_exit(0);
-  // return NULL;
 }
 
 
@@ -63,11 +54,11 @@ pthread_t thread_id[prvi_argument];
 ptr = &prvi_argument;
 
 if (pthread_mutex_init(&lock, NULL) != 0) { 
-  cout << "\n mutex init has failed\n" << endl; 
+  cout << "Mutex init has failed\n" << endl; 
   return 1; 
 } 
 
-// int sem_id = sem_init(&binarni_semafor,0,0);
+
 for(int i = 0; i < prvi_argument; i++){
   if(pthread_create(&thread_id[i],NULL,thread_funkcija,&i)!=0){
     cout << "Error, thread not created\n" << thread_id << endl;
@@ -79,9 +70,6 @@ for(int i = 0; i < prvi_argument; i++){
   pthread_join(thread_id[i],NULL);
 }
 
-// for(int i = 0; i < prvi_argument; i++){
-//   cout << broj[i] << endl;
-// }
 pthread_mutex_destroy(&lock);
 
   return 0;
@@ -90,17 +78,3 @@ pthread_mutex_destroy(&lock);
 
 
 
-
-// int pthread_mutex_init(pthread_mutex_t *ključ, const pthread_mutexattr_t *attr);
-// int pthread_mutex_lock(pthread_mutex_t *ključ);
-// int pthread_mutex_unlock(pthread_mutex_t *ključ);
-// int pthread_mutex_destroy(pthread_mutex_t *ključ);
-
-
-
-
-// int pthread_cond_init(pthread_cond_t *uvjet, const pthread_condattr_t *attr);
-// int pthread_cond_wait(pthread_cond_t *uvjet, pthread_mutex_t *ključ);
-// int pthread_cond_signal(pthread_cond_t *uvjet);
-// int pthread_cond_broadcast(pthread_cond_t *uvjet);
-// int pthread_cond_destroy(pthread_cond_t *uvjet); 
