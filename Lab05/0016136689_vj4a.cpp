@@ -1,17 +1,8 @@
 #include <iostream>
-#include <semaphore.h>
 #include <ctime>
-#include <sys/shm.h>
-#include <sys/ipc.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
 #include <cstdlib>
 #include <signal.h>
-#include <sys/sem.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <pthread.h>
 using namespace std;
 
